@@ -4,6 +4,8 @@ const Joi = require('@hapi/joi'); //schema validation
 
 app.use(express.json());
 
+// create a JSON data array
+
 const employee =[
     {
         id:1,
@@ -29,17 +31,19 @@ app.get('/',(req,res)=>{
     res.send('Helllo world');
 });
 
+//GET all employee details
 app.get('/api/employee', (req,res)=> {
     res.send(employee);
     });
-//GET ----(READ)---Request
+
+//GET ----(READ)a single ID Request
 app.get('/api/employee/:id', (req, res) => {
     const employe = employee.find(e => e.id === parseInt(req.params.id));
      
     if (!employe) res.status(404).send('Not valid Employee ID!');
     res.send(employe);
     });
-//POST ---(CREATE)---Request     
+//POST ---(CREATE) a new employee Request     
 app.post('/api/employee',(req,res) =>{
     const { error } = validateEmploye(req.body);
     if(error) {
@@ -57,9 +61,12 @@ app.post('/api/employee',(req,res) =>{
     res.send(employee);
 
 });
+
+//server
 const port = process.env.PORT || 3000;
 app.listen(3000,()=>console.log('listening ${port}...'));
 
+//schema validation
 function validateEmploye(employe){
     const schema = {
         name : Joi.string().min(3).required(),
@@ -69,7 +76,7 @@ function validateEmploye(employe){
     return Joi.validate(employe,schema);
 }
 
-//PUT ---(UPDATE)---- Request
+//PUT ---(UPDATE) a employee identified by the EmployeeId in the Request
 app.put('/api/employee/:id',(req,res)=>{
     const employe = employee.find(e => e.id === parseInt(req.params.id));
     if(!employe)
@@ -88,8 +95,8 @@ app.put('/api/employee/:id',(req,res)=>{
         res.send(employe);
     }
 );
-//DELETE Request
-app.delete('api/employee/:id',(req,res) =>{
+//DELETE a employee with the specified EmployeeId in the Request
+app.delete('/api/employee/:id',(req,res) =>{
     
     const employe = employee.find(e => e.id === parseInt(req.params.id));
         if(!employe) return  res.status(404).send('The Employee with the given ID was not found');
